@@ -13,3 +13,15 @@ export const CP_TAG_NAME = [
   'InterfaceMethodref',
   'NameAndType',
 ]
+
+export const BASIC_TYPE_IDENTIFIER = {
+  'B': 'byte',
+  'C': 'char',
+  'D': 'double',
+  'F': 'float',
+  'I': 'int',
+  'J': 'long',
+  'S': 'short',
+  'Z': 'boolean',
+  'V': 'void',
+}

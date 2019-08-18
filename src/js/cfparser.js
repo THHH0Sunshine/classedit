@@ -53,7 +53,7 @@ ArrayBufferReader.prototype.nextInteger = function() {
 
 ArrayBufferReader.prototype.nextLong = function() {
   var rt = {}
-  rt.h = this.view.getInt32(this.offset)
+  rt.h = this.view.getUint32(this.offset)
   rt.l = this.view.getUint32(this.offset + 4)
   this.offset += 8
   return rt
@@ -219,9 +219,11 @@ export function parseClassFileArrayBuffer(ab) {
           break
         case 5:
           obj.long_ = reader.nextLong()
+          index++
           break
         case 6:
           obj.double_ = reader.nextDouble()
+          index++
           break
         case 7:
           obj.name_index = reader.nextu2()
@@ -240,6 +242,8 @@ export function parseClassFileArrayBuffer(ab) {
           obj.type_index = reader.nextu2()
           break
         default:
+          console.log(obj.tag_) //debug
+          console.log(rt) //debug
           return null
       }
     }
@@ -281,6 +285,8 @@ export function parseClassFileArrayBuffer(ab) {
     }
     return rt
   } catch (e) {
+    console.log(e) //debug
+    console.log(rt) //debug
     return null
   }
 }
