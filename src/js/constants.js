@@ -1,0 +1,15 @@
+export const CP_TAG_NAME = [
+  null,
+  'Utf-8',
+  null,
+  'Integer',
+  'Float',
+  'Long',
+  'Double',
+  'Class',
+  'String',
+  'Fieldref',
+  'Methodref',
+  'InterfaceMethodref',
+  'NameAndType',
+]
