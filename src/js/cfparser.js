@@ -79,38 +79,6 @@ ArrayBufferReader.prototype.nextUtf8 = function(len) {
   return getStringFromUtf8(arr)
 }
 
-var accessFlagsTable = [
-  //class
-  [
-    'public_',       null,            null,         null,
-    'final_',        'ACC_SUPER',     null,         null,
-    null,            'interface_',    'abstract_',  null,
-    'ACC_SYNTHETIC', 'annotation_',   'enum_',      null,
-  ],
-  //field
-  [
-    'public_',       'private_',      'protected_', 'static_',
-    'final_',        null,            'volatile_',  'transient_',
-    null,            null,            null,         null,
-    'ACC_SYNTHETIC', null,            'enum_',      null,
-  ],
-  //method
-  [
-    'public_',       'private_',      'protected_', 'static_',
-    'final_',        'synchronized_', 'ACC_BRIDGE', 'ACC_VARARGS',
-    'native_',       null,            'abstract_',  'strictfp_',
-    'ACC_SYNTHETIC', null,            null,         null,
-  ],
-]
-
-function parseAccessFlags(u2, where) {
-  var rt = {}
-  for (var i = 0; i < 16; i++)
-    if ((u2 & (1 << i)) && accessFlagsTable[where][i])
-      rt[accessFlagsTable[where][i]] = true
-  return rt
-}
-
 function parseAttribute(cp, abreader) {
   var rt = {}
   rt.attribute_name_index = abreader.nextu2()
@@ -157,7 +125,7 @@ function parseAttribute(cp, abreader) {
         obj.inner_class_info_index = abreader.nextu2()
         obj.outer_class_info_index = abreader.nextu2()
         obj.inner_name_index = abreader.nextu2()
-        obj.inner_name_access_flags = parseAccessFlags(abreader.nextu2(), 0)
+        obj.inner_name_access_flags = abreader.nextu2()
       }
       break
     case 'LineNumberTable':
@@ -248,7 +216,7 @@ export function parseClassFileArrayBuffer(ab) {
       }
     }
     //class
-    rt.access_flags = parseAccessFlags(reader.nextu2(), 0)
+    rt.access_flags = reader.nextu2()
     rt.this_class_index = reader.nextu2()
     rt.super_class_index = reader.nextu2()
     length = reader.nextu2()
@@ -261,7 +229,7 @@ export function parseClassFileArrayBuffer(ab) {
     for (var index = 0; index < length; index++) {
       var obj = {}
       rt.fields_[index] = obj
-      obj.access_flags = parseAccessFlags(reader.nextu2(), 1)
+      obj.access_flags = reader.nextu2()
       obj.name_index = reader.nextu2()
       obj.signature_index = reader.nextu2()
       var len = reader.nextu2()
@@ -275,7 +243,7 @@ export function parseClassFileArrayBuffer(ab) {
     for (var index = 0; index < length; index++) {
       var obj = {}
       rt.methods_[index] = obj
-      obj.access_flags = parseAccessFlags(reader.nextu2(), 2)
+      obj.access_flags = reader.nextu2()
       obj.name_index = reader.nextu2()
       obj.signature_index = reader.nextu2()
       var len = reader.nextu2()
