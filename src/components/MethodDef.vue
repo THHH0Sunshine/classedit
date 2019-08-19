@@ -31,17 +31,27 @@
         </el-button>
       </el-tooltip>
     </div>
+    <div class="attributes">
+      <attribute
+        v-for="(v,k) in method_info.attributes_"
+        :key="k"
+        :attribute="v"
+        :cpdisplay="cpdisplay">
+      </attribute>
+    </div>
   </div>
 </template>
 
 <script>
 import AccessFlags from './AccessFlags.vue'
+import Attribute from './Attribute.vue'
 import { TRANSLATE_TYPE } from '@/js/constants.js'
 
 export default {
   name: 'MethodDef',
   components: {
     AccessFlags,
+    Attribute,
   },
   props: {
     method_info: Object,
@@ -74,6 +84,10 @@ export default {
 }
 
 .tag + .tag {
-  margin-left: 15px;
+  margin-left: 10px;
+}
+
+.attributes {
+  padding-left: 25px;
 }
 </style>
