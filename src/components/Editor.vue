@@ -11,12 +11,22 @@
       :class_info="parsedClassFile"
       :cpdisplay="cpdisplay">
     </class-def>
-    <field-def
-      v-for="(v,k) in fields"
-      :key="k"
-      :field_info="v"
-      :cpdisplay="cpdisplay">
-    </field-def>
+    <div>
+      <field-def
+        v-for="(v,k) in fields"
+        :key="k"
+        :field_info="v"
+        :cpdisplay="cpdisplay">
+      </field-def>
+    </div>
+    <div>
+      <method-ref
+        v-for="(v,k) in methods"
+        :key="k"
+        :method_info="v"
+        :cpdisplay="cpdisplay">
+      </method-ref>
+    </div>
     <constant-pool
       v-if="parsedClassFile"
       :cpdisplay="cpdisplay">
@@ -27,6 +37,7 @@
 <script>
 import ClassDef from './ClassDef.vue'
 import FieldDef from './FieldDef.vue'
+import MethodRef from './MethodDef.vue'
 import ConstantPool from './ConstantPool.vue'
 import { parseClassFileArrayBuffer } from '@/js/cfparser.js'
 import { CP_TAG_NAME, TRANSLATE_TYPE } from '@/js/constants.js'
@@ -36,6 +47,7 @@ export default {
   components: {
     ClassDef,
     FieldDef,
+    MethodRef,
     ConstantPool,
   },
   data() {
@@ -91,6 +103,9 @@ export default {
     },
     fields() {
       return this.parsedClassFile ? this.parsedClassFile.fields_ : []
+    },
+    methods() {
+      return this.parsedClassFile ? this.parsedClassFile.methods_ : []
     },
   },
   methods: {

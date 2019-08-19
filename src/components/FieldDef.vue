@@ -41,13 +41,13 @@ export default {
     nameDisplay() {
       return {
         index: '#' + this.field_info.name_index,
-        full: this.cpdisplay[this.field_info.name_index - 1].content
+        full: this.cpdisplay[this.field_info.name_index - 1].content,
       }
     },
     signatureDisplay() {
       return {
         index: '#' + this.field_info.signature_index,
-        full: TRANSLATE_TYPE(this.cpdisplay[this.field_info.signature_index - 1].content).value
+        full: TRANSLATE_TYPE(this.cpdisplay[this.field_info.signature_index - 1].content).value,
       }
     },
   },

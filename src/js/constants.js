@@ -82,7 +82,7 @@ export function TRANSLATE_TYPE(str) {
           sa.push(arg.value)
           startind += arg.len
         }
-        rt.args = '(' + sa.join(',') + ')'
+        rt.args = '(' + sa.join(', ') + ')'
         rt.value = TRANSLATE_TYPE(str.substring(endind + 1)).value
         break
     }
