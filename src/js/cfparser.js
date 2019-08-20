@@ -151,6 +151,9 @@ function parseAttribute(cp, abreader) {
         obj.index_ = abreader.nextu2()
       }
       break
+    case 'Signature':
+      rt.signature_index = abreader.nextu2()
+      break
     case 'SourceFile':
       rt.sourcefile_index = abreader.nextu2()
       break

@@ -27,11 +27,21 @@
           {{constantvalue.full}}
         </el-button>
       </el-tooltip>
+      <el-tooltip
+        v-if="signature"
+        :content="signature.index">
+        <el-button
+          type="text">
+          {{signature.full}}
+        </el-button>
+      </el-tooltip>
     </div>
   </div>
 </template>
 
 <script>
+import { TRANSLATE_TYPE } from '@/js/constants.js'
+
 export default {
   name: 'Attribute',
   props: {
@@ -59,6 +69,21 @@ export default {
     code() {
       if (this.nameDisplay.full == 'Code') {
         return {}
+      } else
+        return null
+    },
+    signature() {
+      if (this.nameDisplay.full == 'Signature') {
+        let trans = TRANSLATE_TYPE(this.cpdisplay[this.attribute.signature_index - 1])
+        let rt = {
+          index: '#' + this.attribute.signature_index,
+          full: trans.value,
+        }
+        if (trans.args)
+          rt.full += ' (*)' + trans.args
+        if (trans.fgen)
+          rt.full = trans.fgen + ' ' + rt.full
+        return rt
       } else
         return null
     },
