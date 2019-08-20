@@ -209,6 +209,17 @@ export function parseClassFileArrayBuffer(ab) {
           obj.name_index = reader.nextu2()
           obj.type_index = reader.nextu2()
           break
+        case 15:
+          obj.reference_kind = reader.nextu1()
+          obj.reference_index = reader.nextu2()
+          break
+        case 16:
+          obj.descriptor_index = reader.nextu2()
+          break
+        case 18:
+          obj.bootstrap_method_attr_index = reader.nextu2()
+          obj.name_and_type_index = reader.nextu2()
+          break
         default:
           console.log(obj.tag_) //debug
           console.log(rt) //debug

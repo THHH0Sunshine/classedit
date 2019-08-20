@@ -24,16 +24,19 @@
       </el-button>
     </el-tooltip>
     <span v-if="interfacesDisplay.length" class="tag">implements</span>
-    <el-tooltip
+    <span
       v-for="(v,k) in interfacesDisplay"
       :key="k"
-      class="tag"
-      :content="v.index">
-      <el-button
-        type="text">
-        {{v.full}}
-      </el-button>
-    </el-tooltip>
+      class="tag">
+      <el-tooltip
+        :content="v.index">
+        <el-button
+          type="text">
+          {{v.full}}
+        </el-button>
+      </el-tooltip>
+      <span v-if="k < interfacesDisplay.length - 1">,</span>
+    </span>
   </div>
 </template>
 

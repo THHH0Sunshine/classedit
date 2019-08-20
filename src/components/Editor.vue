@@ -89,10 +89,26 @@ export default {
         }
         for (let i = 0; i < rt.length; i++) {
           let obj = this.constant_pool[i + 1]
-          if (obj && obj.tag_ >= 9 && obj.tag_ <= 11) {
+          if (!obj)
+            continue
+          if (obj.tag_ >= 9 && obj.tag_ <= 11) {
             let c = rt[obj.class_index - 1]
             let nat = rt[obj.name_and_type_index - 1]
             rt[i].fullcontent = nat.type.value + ' ' + c.fullcontent + '::' + nat.name + nat.type.args
+          } else if (obj.tag_ == 16) {
+            let t = TRANSLATE_TYPE(this.constant_pool[obj.descriptor_index].utf8_)
+            rt[i].fullcontent = t.value + ' (*)' + t.args
+          } else if (obj.tag_ == 18) {
+            let nat = rt[obj.name_and_type_index - 1]
+            rt[i].fullcontent = nat.type.value + ' [' + obj.bootstrap_method_attr_index + ']:' + nat.name + nat.type.args
+          }
+        }
+        for (let i = 0; i < rt.length; i++) {
+          let obj = this.constant_pool[i + 1]
+          if (!obj)
+            continue
+          if (obj.tag_ == 15) {
+            rt[i].fullcontent = obj.reference_kind + ': ' + this.constant_pool[obj.reference_index].fullcontent
           }
         }
         return rt
@@ -142,6 +158,12 @@ export default {
           return '#' + obj.class_index + '.#' + obj.name_and_type_index
         case 12:
           return '#' + obj.name_index + ':#' + obj.type_index
+        case 15:
+          return obj.reference_kind + ':#' + obj.reference_index
+        case 16:
+          return '#' + obj.descriptor_index
+        case 18:
+          return '[' + obj.bootstrap_method_attr_index + ']:#' + obj.name_and_type_index
         default:
           return null
       }

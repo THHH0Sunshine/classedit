@@ -12,6 +12,12 @@ export const CP_TAG_NAME = [
   'Methodref',
   'InterfaceMethodref',
   'NameAndType',
+  null,
+  null,
+  'MethodHandle',
+  'MethodType',
+  null,
+  'InvokeDynamic',
 ]
 
 export const ACCESS_FLAG = [
