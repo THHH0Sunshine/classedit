@@ -9,7 +9,10 @@
     <div class="content">
       <div v-if="code">
         <div>stack={{attribute.max_stack}}, locals={{attribute.max_locals}}</div>
-        <div class="code">byte code <b v-if="attribute.exception_table.length">and exception table </b>here...</div>
+        <div class="code">
+          <div v-for="(v,k) in code" :key="k">{{v}}</div>
+          <b v-if="attribute.exception_table.length">exception table here...</b>
+        </div>
         <div>
           <attribute
             v-for="(v,k) in attribute.attributes_"
@@ -40,7 +43,7 @@
 </template>
 
 <script>
-import { TRANSLATE_TYPE } from '@/js/constants.js'
+import { TRANSLATE_TYPE, BYTECODE } from '@/js/constants.js'
 
 export default {
   name: 'Attribute',
@@ -68,7 +71,41 @@ export default {
     },
     code() {
       if (this.nameDisplay.full == 'Code') {
-        return {}
+        let rt = []
+        let op = 0
+        let wide = false
+        for (let byte of this.attribute.code_) {
+          if (op) {
+            rt[rt.length - 1] += ' 0x' + byte.toString(16)
+            op--
+          } else {
+            let name = BYTECODE[byte]
+            if (!name) {
+              console.log(rt) // debug
+              return ['ERROR: unknown byte 0x' + byte.toString(16)]
+            }
+            if (name == 'wide') {
+              wide = true
+            } else if (name[0] > 0) {
+              op = name[0] * 1
+              if (wide) op++
+              name = name.slice(2)
+            }
+            rt.push(name)
+          }
+        }
+        if (op) {
+          console.log(rt) // debug
+          console.log(op) // debug
+          console.log(wide) // debug
+          return ['ERROR: operands left']
+        }
+        if (wide) {
+          console.log(rt) // debug
+          console.log(op) // debug
+          return ['ERROR: wide left']
+        }
+        return rt
       } else
         return null
     },

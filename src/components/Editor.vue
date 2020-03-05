@@ -94,7 +94,7 @@ export default {
           if (obj.tag_ >= 9 && obj.tag_ <= 11) {
             let c = rt[obj.class_index - 1]
             let nat = rt[obj.name_and_type_index - 1]
-            rt[i].fullcontent = nat.type.value + ' ' + c.fullcontent + '::' + nat.name + nat.type.args
+            rt[i].fullcontent = nat.type.value + ' ' + c.fullcontent + '::' + nat.name + (nat.type.args || '')
           } else if (obj.tag_ == 16) {
             let t = TRANSLATE_TYPE(this.constant_pool[obj.descriptor_index].utf8_)
             rt[i].fullcontent = t.value + ' (*)' + t.args
