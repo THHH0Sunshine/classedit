@@ -76,19 +76,22 @@ export default {
         let wide = false
         for (let byte of this.attribute.code_) {
           if (op) {
-            rt[rt.length - 1] += ' 0x' + byte.toString(16)
+            rt[rt.length - 1] += ' ' + byte
             op--
           } else {
             let name = BYTECODE[byte]
             if (!name) {
               console.log(rt) // debug
-              return ['ERROR: unknown byte 0x' + byte.toString(16)]
+              return ['ERROR: unknown byte ' + byte]
             }
             if (name == 'wide') {
               wide = true
             } else if (name[0] > 0) {
               op = name[0] * 1
-              if (wide) op++
+              if (wide) {
+                wide = false
+                op++
+              }
               name = name.slice(2)
             }
             rt.push(name)
@@ -111,13 +114,13 @@ export default {
     },
     signature() {
       if (this.nameDisplay.full == 'Signature') {
-        let trans = TRANSLATE_TYPE(this.cpdisplay[this.attribute.signature_index - 1])
+        let trans = TRANSLATE_TYPE(this.cpdisplay[this.attribute.signature_index - 1].content)
         let rt = {
           index: '#' + this.attribute.signature_index,
           full: trans.value,
         }
         if (trans.args)
-          rt.full += ' (*)' + trans.args
+          rt.full += ' ' + trans.args
         if (trans.fgen)
           rt.full = trans.fgen + ' ' + rt.full
         return rt

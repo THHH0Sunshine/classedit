@@ -71,8 +71,26 @@ function _getRightIndex(str, startind) {
   return -1
 }
 
-function _translateGenericType(str, startind, endind) {
-  //
+function _translateGenericType(str, startind) {
+  if (str[startind] == '+') {
+    return '<? extends ' + TRANSLATE_TYPE(str.substring(startind + 1)).value + '>'
+  }
+  if (str[startind] == '-') {
+    return '<? super ' + TRANSLATE_TYPE(str.substring(startind + 1)).value + '>'
+  }
+  return '<' + TRANSLATE_TYPE(str.substring(startind)).value + '>'
+}
+
+function _translateGenericList(str, startind, endind) {
+  let list = []
+  while (startind < endind) {
+    let cind = str.indexOf(':', startind)
+    if (cind <= 0 || cind >= endind) return null
+    let type = TRANSLATE_TYPE(str.substring(cind + 1))
+    list.push(str.substring(startind, cind) + ' extends ' + type.value)
+    startind = cind + 1 + type.len
+  }
+  return '<' + list.join(', ') + '>'
 }
 
 export function TRANSLATE_TYPE(str) {
@@ -84,8 +102,7 @@ export function TRANSLATE_TYPE(str) {
     rt.len = 1
   } else {
     switch (ch) {
-      case 'L':
-      case 'T':
+      case 'L': {
         let ltind = str.indexOf('<')
         let scind = str.indexOf(';')
         if (ltind > 0 && ltind < scind) {
@@ -95,7 +112,7 @@ export function TRANSLATE_TYPE(str) {
             rt.len = str.length
             return rt
           }
-          let gen = _translateGenericType(str, startind, endind)
+          let gen = _translateGenericType(str, startind)
           if (!gen) {
             rt.len = str.length
             return rt
@@ -107,12 +124,20 @@ export function TRANSLATE_TYPE(str) {
           rt.len = scind + 1
         }
         break
-      case '[':
+      }
+      case 'T': {
+        let scind = str.indexOf(';')
+        rt.value = str.substring(1, scind).replace(/\//g, '.')
+        rt.len = scind + 1
+        break
+      }
+      case '[': {
         let itm = TRANSLATE_TYPE(str.substring(1))
         rt.value = itm.value + '[]'
         rt.len = itm.len + 1
         break
-      case '(':
+      }
+      case '(': {
         rt.len = str.length
         let startind = 1
         let endind = str.indexOf(')')
@@ -127,12 +152,13 @@ export function TRANSLATE_TYPE(str) {
         rt.args = '(' + sa.join(', ') + ')'
         rt.value = TRANSLATE_TYPE(str.substring(endind + 1)).value
         break
-      case '<':
+      }
+      case '<': {
         rt.len = str.length
         let eind = _getRightIndex(str, 1)
         if (eind < 0)
           return rt
-        let gen = _translateGenericType(str, 1, eind)
+        let gen = _translateGenericList(str, 1, eind)
         if (!gen)
           return rt
         let it = TRANSLATE_TYPE(str.substring(eind + 1))
@@ -140,6 +166,7 @@ export function TRANSLATE_TYPE(str) {
         rt.value = it.value
         rt.fgen = gen
         break
+      }
       default:
         rt.len = str.length
     }
