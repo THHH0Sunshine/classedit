@@ -8,7 +8,7 @@
       <el-table-column
         prop="tag"
         label="Tag"
-        width="150">
+        width="155">
       </el-table-column>
       <el-table-column
         prop="content"
